@@ -1,0 +1,76 @@
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import './desCription.css';
+import productApi from '../../../../api/productApi';
+class Description extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = {
+            singleProduct: {},
+            imageSinglePage: [],
+            description: '',
+        }
+    }
+
+    async componentDidMount() {
+        const { match } = this.props;
+        console.log(match);
+        try {
+            const newProduct = await productApi.getDetail(match.params.productId);
+            this.setState({
+                singleProduct: newProduct,
+                imageSinglePage: newProduct.images,
+                description: newProduct.description,
+            });
+        } catch (error) {
+            console.log('Failed to fetch data', error.message);
+        }
+    }
+    findDescription = (description) => {
+        return { _html: description }
+    };
+    render() {
+        const { singleProduct, imageSinglePage, description } = this.state;
+        return (
+            <div id="tab_1" className="tab_container active">
+                <div className="row">
+                    <div className="col-lg-5 desc_col">
+                        <div className="tab_title">
+                            <h4>Description</h4>
+                        </div>
+                        <div className="tab_text_block">
+                            <h2>{singleProduct.name}</h2>
+                            <p ><div dangerouslySetInnerHTML={{ __html: description }} /></p>
+                        </div>
+                        <div className="tab_image">
+                            <img src={imageSinglePage[0]} alt="" />
+                        </div>
+                        <div className="tab_text_block">
+                            {/* <h2>{singleProduct.name}</h2> */}
+                            {/* <p>Nam tempus turpis at metus scelerisque placerat nulla deumantos solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis ut...</p> */}
+                        </div>
+                    </div>
+                    <div className="col-lg-5 offset-lg-2 desc_col">
+                        <div className="tab_image">
+                            {/* <img src={imageSinglePage[1]} alt="" /> */}
+                        </div>
+                        <div className="tab_text_block">
+                            {/* <h2>{singleProduct.name}</h2> */}
+                            {/* <p>Nam tempus turpis at metus scelerisque placerat nulla deumantos solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis ut...</p> */}
+                        </div>
+                        <div className="tab_image desc_last">
+                            {/* <img src={imageSinglePage[2]} alt="" /> */}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+Description.propTypes = {
+
+    match: PropTypes.object.isRequired,
+};
+
+export default Description;
